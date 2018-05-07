@@ -1,4 +1,3 @@
-## SELECTED, WORKING IMPLEMENTATION OF mbGD with ESE for AMC038
 #  import packages
 import numpy as np
 import tensorflow as tf
