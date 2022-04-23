@@ -6,11 +6,12 @@
 
 - Takes as inputs any continuous representation of the stimulus (e.g., an auditory spectrogram), along with the elicited neural activity (e.g., High-Frequency Activity, 70-150Hz).
 
-- Organized along 5 axes:
-  - data preparation, or preprocessing, with tools for assembling the feature lag matrix, creating groups and classes, fixing artifacts and scaling;
-  - model selection, with tools to perform StratifiedGroupShuffleSplit, grid search and best of N strategies, and to yield model outputs;
+- Organized along 6 axes:
+  - data preparation, with tools for creating classes and groups, fixing artifacts, and assembling the feature lag matrix;
+  - data splitting and scaling, to perform a unique StratifiedGroupShuffleSplit, and to scale data;
   - core models, with a Robust Multiple Linear Regression with Early Stopping estimator based on Tensorflow, and a MultiLayer Perceptron with Custom Early Stopping estimator based on sklearn;
-  - visualizations, with tools to observe data at different steps of the modeling process;
-  - other tools.
+  - model outputs, to yield predicted sets, model coefficients and performance metrics;
+  - model selection, with tools to perform a custom grid search and a best of N strategy;
+  - visualizations, with tools to observe data at different steps of the modeling process.
 
 - Allows for unique controllability of the splitting and model selection, and provides cutting-edge estimators to compute both encoding and decoding models.
