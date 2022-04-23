@@ -1,6 +1,6 @@
-# neural-modeling
+# NeMo: Neural Modeling toolbox
 
-This repository contains a series of tools to model relationships between auditory stimuli and neural activity.
+This repository contains a series of tools to model neural activity.
 
 Two modeling algorithms are made available for now:
 - a Sklearn-based Ridge-regression algorithm;
