@@ -1,4 +1,4 @@
-# auditory-neural-predictive-modeling
+# neural-modeling
 
 This repository contains a series of tools to model relationships between auditory stimuli and neural activity.
 
