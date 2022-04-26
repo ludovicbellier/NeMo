@@ -847,18 +847,13 @@ def grid_search(x, y, g, c, params, hyperparam_grid=None):
     param_verbose = params['verbose']
     param_fig = params['flag_fig']
     mdl_list = []
-    cv_y_pred_all = []
     cv_results_all = []
     if params['model_type'] == 'recon':
         idx_fixed_test = np.multiply(params['fixed_test'], params['fs']).astype('int16')
         idx_fixed_test[idx_fixed_test > len(g)] = len(g)
-        cv_y_pred = np.zeros((n_cv, n_par, np.diff(idx_fixed_test)[0]))
         if params['algo'] == 'MLP' and n_bon > 1:
-            cv_y_pred_all = np.zeros((n_cv, n_bon, n_par, np.int(np.diff(params['fixed_test']) * params['fs'])))
-            cv_results_all = np.zeros((n_cv, n_bon, n_par, 11))
-    else:
-        cv_y_pred = 0
-    cv_results = np.zeros((n_cv, n_par, 11))
+            cv_results_all = np.zeros((n_cv, n_bon, n_par, 8))
+    cv_results = np.zeros((n_cv, n_par, 8))
     print('Fitting {} folds for each of {} candidates, totalling {} fits'.format(n_cv, n_par, n_cv * n_par))
     idx = 0
     while idx < n_cv:
@@ -883,18 +878,16 @@ def grid_search(x, y, g, c, params, hyperparam_grid=None):
                 mdl, mdl_list = best_of_n(mdl, feature_sets, target_sets, scaler, params)
             else:
                 mdl = []
-            [metrics, _, y_tmp, n_iter, runtime, _] = get_model_output(mdl, feature_sets, target_sets, scaler, **params)
-            cv_results[idx, idxPar, :] = np.append(metrics.ravel(), [n_iter, runtime])
+            [metrics, _, _, n_iter, runtime, _] = get_model_output(mdl, feature_sets, target_sets, scaler, **params)
+            cv_results[idx, idxPar, :] = np.append(metrics[:2, :].ravel(), [n_iter, runtime])
             if params['model_type'] == 'recon':
-                cv_y_pred[idx, idxPar, :] = y_tmp.ravel()
                 if params['algo'] == 'MLP' and n_bon > 1:
                     for idxBon in range(n_bon):
                         params['verbose'] = 0
                         params['flag_fig'] = 0
-                        [metrics, _, y_tmp, n_iter, runtime, _] = get_model_output(mdl_list[idxBon], feature_sets,
-                                                                                   target_sets, scaler, **params)
-                        cv_results_all[idx, idxBon, idxPar, :] = np.append(metrics.ravel(), [n_iter, runtime])
-                        cv_y_pred_all[idx, idxBon, idxPar, :] = y_tmp.ravel()
+                        [metrics, _, _, n_iter, runtime, _] = get_model_output(mdl_list[idxBon], feature_sets,
+                                                                               target_sets, scaler, **params)
+                        cv_results_all[idx, idxBon, idxPar, :] = np.append(metrics[:2, :].ravel(), [n_iter, runtime])
                 params['verbose'] = param_verbose
                 params['flag_fig'] = param_fig
         if not np.all(np.isnan(cv_results[idx, [0, -1], 0])):
@@ -904,8 +897,7 @@ def grid_search(x, y, g, c, params, hyperparam_grid=None):
     best_hyperparam = hyperparam_list[idx_best_hyperparam]
     if params['model_type'] == 'recon' and params['algo'] == 'MLP' and n_bon > 1:
         cv_results = cv_results_all
-        cv_y_pred = cv_y_pred_all
-    return best_hyperparam, cv_results, cv_y_pred
+    return best_hyperparam, cv_results
 
 
 def best_of_n(mdl, x, y, s, params):
